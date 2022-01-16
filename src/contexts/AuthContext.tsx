@@ -1,8 +1,10 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
-import { destroyCookie, setCookie } from "nookies";
 import { api } from "../services/apiClient";
+import { Buffer } from "buffer";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type User = {
+  name: string;
   email: string;
 };
 
@@ -27,11 +29,12 @@ export const AuthContext = createContext({} as AuthContextData);
 let authChannel: BroadcastChannel;
 
 export function signOut() {
-  destroyCookie(undefined, "hiperion-admin.token");
-
   authChannel.postMessage(" ");
 
-  // Router.push('/');
+  new Promise<void>(async (resolve, reject) => {
+    await AsyncStorage.removeItem("@hiperion.token");
+    await AsyncStorage.removeItem("@hiperion.user");
+  });
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -52,33 +55,48 @@ export function AuthProvider({ children }: AuthProviderProps) {
           break;
       }
     };
+
+    new Promise(async () => {
+      const userAlreadyLoggedIn = await AsyncStorage.getItem("@hiperion.user");
+
+      if (!userAlreadyLoggedIn) {
+        return;
+      }
+
+      const user = JSON.parse(userAlreadyLoggedIn) as User;
+      setUser(user);
+    });
   }, []);
 
   async function signIn({ email, password }: SignInCredentials) {
-    try {
-      const response = await api.post("sessions", {
-        email,
-        password,
-      });
+    const authorization = Buffer.from(`${email}:${password}`, "ascii").toString(
+      "base64"
+    );
 
-      const { token } = response.data;
+    const response = await api.post("/auth/signin", null, {
+      headers: {
+        Authorization: `Basic ${authorization}`,
+      },
+    });
 
-      setCookie(undefined, "umbriel-admin.token", token, {
-        maxAge: 60 * 60 * 24 * 30, // 30 days
-        path: "/",
-      });
+    const { token, name } = response.data;
 
-      //@ts-ignore
-      api.defaults.headers.authorization = `Bearer ${token}`;
+    await AsyncStorage.setItem("@hiperion.token", token);
+    await AsyncStorage.setItem(
+      "@hiperion.user",
+      JSON.stringify({
+        email: email,
+        name: name,
+      })
+    );
 
-      setUser({
-        email,
-      });
+    //@ts-ignore
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
-      // Router.push("/messages");
-    } catch (err) {
-      console.log(err);
-    }
+    setUser({
+      email,
+      name,
+    });
   }
 
   return (

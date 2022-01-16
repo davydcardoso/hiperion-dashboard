@@ -7,6 +7,7 @@ import {
   Link as ChakraLink,
   Link,
   Input,
+  useToast,
 } from "@chakra-ui/react";
 
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,6 +16,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
 import { AuthContext } from "../../contexts/AuthContext";
+import { Logo } from "../../components/Logo";
+import { AxiosError } from "axios";
 
 type SignInFormData = {
   email: string;
@@ -27,13 +30,37 @@ const signInFormSchema = yup.object().shape({
 });
 
 const SignIn: React.FC = () => {
+  const toast = useToast();
   const { signIn } = useContext(AuthContext);
   const { register, handleSubmit, formState } = useForm({
     resolver: yupResolver(signInFormSchema),
   });
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (data) => {
-    await signIn(data);
+    await signIn(data).catch((err) => {
+      toast({
+        title: "Login Error",
+        position: "top-right",
+        status: "error",
+        description: err.message || "Error logging in",
+        isClosable: true,
+      });
+
+      if (err.response) {
+        const error = err as AxiosError;
+
+        toast({
+          title: "Login Error",
+          position: "top-right",
+          status: "error",
+          description:
+            error.response?.data.error || err.message || "Error logging in",
+          isClosable: true,
+        });
+      }
+
+      console.log(err);
+    });
   };
 
   const { errors } = formState;
@@ -48,7 +75,7 @@ const SignIn: React.FC = () => {
         flexDirection={["column", "row"]}
       >
         <Stack p={[6, 8]} spacing="4" mr={[0, 0, 0, 100]}>
-          {/* <Logo /> */}
+          <Logo />
           <Text
             color="gray.900"
             letterSpacing="tight"

@@ -1,15 +1,9 @@
 import axios, { AxiosError } from "axios";
-import { parseCookies } from "nookies";
 import { signOut } from "../contexts/AuthContext";
 
 export function setupApiClient(ctx = undefined) {
-  const cookies = parseCookies(ctx);
-
   const api = axios.create({
-    baseURL: process.env.BACKEND_URL_API || "http://localhost:3333/",
-    headers: {
-      "x-access-token": cookies["hiperion.token"],
-    },
+    baseURL: process.env.BACKEND_URL_API || "http://localhost:3001/api/v1",
   });
 
   api.interceptors.response.use(

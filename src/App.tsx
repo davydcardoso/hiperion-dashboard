@@ -1,13 +1,14 @@
 import React from "react";
 import { ChakraProvider } from "@chakra-ui/react";
-
-import { SignIn } from "./pages/SignIn";
-import { Dashboard } from "./pages/dashboard";
+import { Routes } from "./routes";
+import { AuthProvider } from "./contexts/AuthContext";
 
 export const App: React.FC = () => {
   return (
     <ChakraProvider>
-      <SignIn />
+      <AuthProvider>
+        <Routes />
+      </AuthProvider>
     </ChakraProvider>
   );
 };
