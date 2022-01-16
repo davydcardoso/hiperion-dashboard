@@ -3,7 +3,7 @@ import { signOut } from "../contexts/AuthContext";
 
 export function setupApiClient(ctx = undefined) {
   const api = axios.create({
-    baseURL: process.env.BACKEND_URL_API || "http://localhost:3001/api/v1",
+    baseURL: "http://api.rocketzapi.com.br:3003/api/v1",
   });
 
   api.interceptors.response.use(
