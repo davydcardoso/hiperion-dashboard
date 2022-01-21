@@ -177,7 +177,7 @@ export function Sidebar() {
             </Text>
           </Link>
         </a>
-        <a href="/">
+        <a href="/contacts">
           <Link
             display="flex"
             alignItems="center"
@@ -187,11 +187,11 @@ export function Sidebar() {
           >
             <RiContactsLine size="20" />
             <Text ml="4" fontSize="medium" fontWeight="medium">
-              Inscritos
+              Contatos
             </Text>
           </Link>
         </a>
-        <a href="/">
+        <a href="/templates">
           <Link
             display="flex"
             alignItems="center"
@@ -215,7 +215,7 @@ export function Sidebar() {
           >
             <RiPriceTag3Line size="20" />
             <Text ml="4" fontSize="medium" fontWeight="medium">
-              Tags
+              Grupo Contatos
             </Text>
           </Link>
         </a>
