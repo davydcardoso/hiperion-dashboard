@@ -1,7 +1,6 @@
 import { Box, Button, Flex, Heading, HStack, Link, VStack } from "@chakra-ui/react";
 import React from "react";
 import { RiSaveLine } from "react-icons/ri";
-import { CodeEditor } from "../../components/CodeEditor";
 import { Input } from "../../components/Form/Input";
 import { Header } from "../../components/Header";
 import { Sidebar } from "../../components/Sidebar";

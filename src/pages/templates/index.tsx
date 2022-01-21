@@ -82,9 +82,7 @@ export const Templates: React.FC = () => {
                     fontSize="sm"
                     // onClick={() => handleSetDefaultTemplate(template.id)}
                   >
-                    {false == false
-                      ? "Enviar Mensagem"
-                      : "Cancelar Envio"}
+                    Enviar Mensagem
                   </Button>
                 </Td>
               </Tr>
