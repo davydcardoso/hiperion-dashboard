@@ -44,7 +44,6 @@ export const Sidebar: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log(generateQrCode);
     if (generateQrCode) {
       new Promise<void>(async () => {
         const token = await AsyncStorage.getItem("@hiperion.token");

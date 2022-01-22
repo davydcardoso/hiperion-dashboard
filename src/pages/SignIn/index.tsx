@@ -65,6 +65,8 @@ const SignIn: React.FC = () => {
 
   const { errors } = formState;
 
+  console.log(process.env.BACKEND_URL_API);
+
   return (
     <>
       <Flex
