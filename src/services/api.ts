@@ -1,12 +1,12 @@
 import axios, { AxiosError } from "axios";
 import { signOut } from "../contexts/AuthContext";
-import config from "../config/application";
+import { application } from "../config/application";
 import { urls } from "../config/urls";
 
 export function setupApiClient(ctx = undefined) {
   const api = axios.create({
     baseURL:
-      config.ambient === "production"
+      application.ambient === "production"
         ? urls.backend_api
         : "http://localhost:3001",
   });

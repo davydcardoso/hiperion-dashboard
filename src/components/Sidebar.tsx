@@ -30,7 +30,7 @@ import { signOut } from "../contexts/AuthContext";
 import qrcode from "../teste";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosError } from "axios";
-import config from "../config/application";
+import { application } from "../config/application";
 import { urls } from "../config/urls";
 
 export const Sidebar: React.FC = () => {
@@ -50,7 +50,7 @@ export const Sidebar: React.FC = () => {
 
         const api = axios.create({
           baseURL:
-            config.ambient === "production"
+            application.ambient === "production"
               ? urls.backend_api
               : "http://localhost:3001",
           headers: { Authorization: `Bearer ${token}` },
