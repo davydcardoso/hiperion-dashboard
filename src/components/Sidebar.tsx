@@ -30,8 +30,10 @@ import { signOut } from "../contexts/AuthContext";
 import qrcode from "../teste";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios, { AxiosError } from "axios";
+import config from "../config/application";
+import { urls } from "../config/urls";
 
-export function Sidebar() {
+export const Sidebar: React.FC = () => {
   const [qrCode, setQrCode] = useState<string>(qrcode);
   const [generateQrCode, setGenerateQrCode] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,7 +50,10 @@ export function Sidebar() {
         const token = await AsyncStorage.getItem("@hiperion.token");
 
         const api = axios.create({
-          baseURL: process.env.BACKEND_URL_API,
+          baseURL:
+            config.ambient === "production"
+              ? urls.backend_api
+              : "http://localhost:3001",
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -272,4 +277,4 @@ export function Sidebar() {
       </Button>
     </Flex>
   );
-}
+};
