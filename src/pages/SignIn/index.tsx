@@ -38,14 +38,6 @@ const SignIn: React.FC = () => {
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (data) => {
     await signIn(data).catch((err) => {
-      toast({
-        title: "Login Error",
-        position: "top-right",
-        status: "error",
-        description: err.message || "Error logging in",
-        isClosable: true,
-      });
-
       if (err.response) {
         const error = err as AxiosError;
 
@@ -57,9 +49,17 @@ const SignIn: React.FC = () => {
             error.response?.data.error || err.message || "Error logging in",
           isClosable: true,
         });
+
+        return
       }
 
-      console.log(err);
+      toast({
+        title: "Login Error",
+        position: "top-right",
+        status: "error",
+        description: err.message || "Error logging in",
+        isClosable: true,
+      });
     });
   };
 

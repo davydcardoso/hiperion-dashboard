@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   VStack,
   Link,
@@ -35,7 +35,6 @@ import { urls } from "../config/urls";
 
 export const Sidebar: React.FC = () => {
   const [qrCode, setQrCode] = useState<string>(qrcode);
-  const [generateQrCode, setGenerateQrCode] = useState<boolean>(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -43,50 +42,39 @@ export const Sidebar: React.FC = () => {
     signOut();
   }
 
-  useEffect(() => {
-    if (generateQrCode) {
-      new Promise<void>(async () => {
-        const token = await AsyncStorage.getItem("@hiperion.token");
+  async function atualizarQrCode() {
+    const token = await AsyncStorage.getItem("@hiperion.token");
 
-        const api = axios.create({
-          baseURL:
-            application.ambient === "production"
-              ? urls.backend_api
-              : "http://localhost:3001",
-          headers: { Authorization: `Bearer ${token}` },
-        });
+    const api = axios.create({
+      baseURL:
+        application.ambient === "production"
+          ? urls.backend_api
+          : "http://localhost:3001/hiperion/v1",
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
-        try {
-          await api.get("/whatsapp/qrcode/image").then((response) => {
-            setQrCode(response.data.qrcode);
-            setTimeout(() => {
-              setGenerateQrCode(true);
-            }, 2000);
-          });
-        } catch (err) {
-          const error = err as AxiosError;
-          console.log(error.response?.data);
-
-          if (error.response) {
-            if (error.response.status === 403) {
-              toast({
-                title: "Error generating QR code",
-                position: "top-right",
-                description: "User session has expired, please login again",
-                isClosable: true,
-                onCloseComplete: () => {
-                  signOut();
-                  window.location.reload();
-                },
-              });
-            }
-
-            setGenerateQrCode(false);
-          }
-        }
+    try {
+      await api.get("/whatsapp/qrcode/image").then((response) => {
+        setQrCode(response.data.qrcode);
       });
+    } catch (err) {
+      const error = err as AxiosError;
+      if (error.response) {
+        if (error.response.status === 403) {
+          toast({
+            title: "Error generating QR code",
+            position: "top-right",
+            description: "User session has expired, please login again",
+            isClosable: true,
+            onCloseComplete: () => {
+              signOut();
+              window.location.reload();
+            },
+          });
+        }
+      }
     }
-  });
+  }
 
   async function getQrCodeSocket() {
     const token = await AsyncStorage.getItem("@hiperion.token");
@@ -101,31 +89,25 @@ export const Sidebar: React.FC = () => {
       },
     });
 
-    await api
-      .get("/whatsapp/qrcode", {})
-      .then(() => {
-        setTimeout(() => {}, 6500);
-        setGenerateQrCode(true);
-      })
-      .catch((err) => {
-        const error = err as AxiosError;
-        console.log(error.response?.data);
+    await api.get("/whatsapp/qrcode", {}).catch((err) => {
+      const error = err as AxiosError;
+      console.log(error.response?.data);
 
-        if (error.response) {
-          if (error.response.status === 403) {
-            toast({
-              title: "Error generating QR code",
-              position: "top-right",
-              description: "User session has expired, please login again",
-              isClosable: true,
-              onCloseComplete: () => {
-                signOut();
-                window.location.reload();
-              },
-            });
-          }
+      if (error.response) {
+        if (error.response.status === 403) {
+          toast({
+            title: "Error generating QR code",
+            position: "top-right",
+            description: "User session has expired, please login again",
+            isClosable: true,
+            onCloseComplete: () => {
+              signOut();
+              window.location.reload();
+            },
+          });
         }
-      });
+      }
+    });
 
     return;
   }
@@ -154,11 +136,11 @@ export const Sidebar: React.FC = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Fechar
+            <Button colorScheme="blue" mr={3} onClick={() => getQrCodeSocket()}>
+              Iniciar Sessão
             </Button>
-            <Button onClick={() => getQrCodeSocket()} variant="ghost">
-              Gerar Novo Qr Code
+            <Button onClick={() => atualizarQrCode()} variant="ghost">
+              Atualizar QrCode
             </Button>
           </ModalFooter>
         </ModalContent>

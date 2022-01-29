@@ -8,7 +8,7 @@ export function setupApiClient(ctx = undefined) {
     baseURL:
       application.ambient === "production"
         ? urls.backend_api
-        : "http://localhost:3001",
+        : "http://localhost:3001/hiperion/v1",
   });
 
   api.interceptors.response.use(
