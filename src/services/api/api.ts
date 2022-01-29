@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
-import { signOut } from "../contexts/AuthContext";
-import { application } from "../config/application";
-import { urls } from "../config/urls";
+import { signOut } from "../../contexts/AuthContext";
+import { application } from "../../config/application";
+import { urls } from "../../config/urls";
 
 export function setupApiClient(ctx = undefined) {
   const api = axios.create({

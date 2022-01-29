@@ -127,11 +127,13 @@ const SignIn: React.FC = () => {
           >
             Entrar
           </Button>
-          <Link href="/forgot-password" passHref>
+          
+          <Link href="/create-account" passHref>
             <ChakraLink alignSelf="center" mt="4">
-              <Text color="gray.500">Esqueci minha senha</Text>
+              <Text color="gray.500">Ainda não possui uma conta? Crie já!</Text>
             </ChakraLink>
           </Link>
+         
         </Flex>
       </Flex>
     </>
