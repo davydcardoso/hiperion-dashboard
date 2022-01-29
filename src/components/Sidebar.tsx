@@ -50,7 +50,7 @@ export const Sidebar: React.FC = () => {
 
         const api = axios.create({
           baseURL:
-            application.ambient == "production"
+            application.ambient === "production"
               ? urls.backend_api
               : "http://localhost:3001",
           headers: { Authorization: `Bearer ${token}` },
@@ -93,7 +93,7 @@ export const Sidebar: React.FC = () => {
 
     const api = axios.create({
       baseURL:
-        application.ambient === "production "
+        application.ambient === "production"
           ? urls.backend_api
           : "http://localhost:3001/hiperion/v1",
       headers: {
